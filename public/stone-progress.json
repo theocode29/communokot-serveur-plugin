@@ -1,6 +1,30 @@
 {
-  "generatedAt": "2026-04-18T17:22:52.756372143Z",
+  "lastUpdate": 1776533197,
   "players": {
-    "f9149e85-40fc-3334-857c-889c80c48ae2": 5
+    "f9149e85-40fc-3334-857c-889c80c48ae2": {
+      "name": "Theophile",
+      "advancements": {
+        "infinity_cave:log_out": true,
+        "infinity_cave:technical/armor/boots": true,
+        "infinity_cave:technical/armor/chestplate": true,
+        "infinity_cave:technical/armor/helmet": true,
+        "infinity_cave:technical/armor/leggings": true,
+        "minecraft:recipes/misc/diamond_from_blasting_diamond_ore": true,
+        "minecraft:recipes/misc/diamond_from_smelting_diamond_ore": true
+      },
+      "mined": {
+        "coal_ore": 0,
+        "copper_ore": 0,
+        "diamond_ore": 40,
+        "emerald_ore": 0,
+        "gold_ore": 9,
+        "iron_ore": 41,
+        "lapis_ore": 12,
+        "redstone_ore": 0,
+        "stone": 26
+      },
+      "distance_walked_cm": 898566,
+      "play_ticks": 2810395
+    }
   }
 }
