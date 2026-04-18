@@ -3,7 +3,7 @@ version: '${project.version}'
 main: io.communokot.progress.CommunokotProgressPlugin
 api-version: '1.21'
 authors: [Communokot]
-description: Tracks stone breaks, persists in SQLite, exports snapshots and syncs to GitHub.
+description: Tracks player progress (advancements, mined blocks, distance, play time) with SQLite persistence and GitHub snapshot sync.
 
 commands:
   communokot:

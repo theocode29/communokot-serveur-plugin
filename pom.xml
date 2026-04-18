@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>CommunokotProgress</name>
-    <description>Paper plugin tracking stone breaks with SQLite persistence and GitHub snapshot sync</description>
+    <description>Paper plugin tracking player progress with SQLite persistence and GitHub snapshot sync</description>
 
     <properties>
         <!-- ── Java version cible (à modifier ici uniquement) ── -->
@@ -51,6 +51,12 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

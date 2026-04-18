@@ -4,11 +4,11 @@ database:
 
 snapshot:
   # Local snapshot file written every snapshotIntervalSeconds.
-  localPath: snapshots/stone-progress.json
+  localPath: snapshots/progress.json
 
 export:
   # Local snapshot cadence (seconds)
-  snapshotIntervalSeconds: 60
+  snapshotIntervalSeconds: 250
 
 github:
   enabled: true
@@ -16,7 +16,7 @@ github:
   repo: "your-data-repo"
   branch: "main"
   eventType: "communokot_progress_snapshot"
-  targetPath: "public/stone-progress.json"
+  targetPath: "public/progress.json"
 
   # Option A: set token directly here (not recommended for shared configs).
   # Option B (recommended): leave empty and set env var COMMUNOKOT_GITHUB_TOKEN.
@@ -35,4 +35,4 @@ github:
   maxRetries: 3
 
   # Commit message used by the Actions workflow when writing the JSON file.
-  commitMessage: "chore(data): update stone progress snapshot"
+  commitMessage: "chore(data): update player progress snapshot"

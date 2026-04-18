@@ -43,20 +43,20 @@ public final class SettingsLoader {
 
         return new PluginSettings(
             Path.of(getString(config, "database.path", "data/progress.db")),
-            Path.of(getString(config, "snapshot.localPath", "snapshots/stone-progress.json")),
+            Path.of(getString(config, "snapshot.localPath", "snapshots/progress.json")),
             snapshotIntervalSeconds,
             config.getBoolean("github.enabled", true),
             getString(config, "github.owner", ""),
             getString(config, "github.repo", ""),
             getString(config, "github.branch", "main"),
             getString(config, "github.eventType", "communokot_progress_snapshot"),
-            getString(config, "github.targetPath", "public/stone-progress.json"),
+            getString(config, "github.targetPath", "public/progress.json"),
             token,
             dispatchIntervalSeconds,
             config.getBoolean("github.payloadCompressionEnabled", true),
             maxPayloadBytes,
             maxRetries,
-            getString(config, "github.commitMessage", "chore(data): update stone progress snapshot")
+            getString(config, "github.commitMessage", "chore(data): update player progress snapshot")
         );
     }
 

@@ -7,13 +7,15 @@ import io.communokot.progress.db.DatabaseService;
 import io.communokot.progress.export.ExportService;
 import io.communokot.progress.github.DispatchResult;
 import io.communokot.progress.github.GitHubSyncService;
-import io.communokot.progress.listener.StoneBreakListener;
+import io.communokot.progress.listener.PlayerSessionListener;
+import io.communokot.progress.model.PlayerProgress;
 import io.communokot.progress.service.ProgressService;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
@@ -42,14 +44,16 @@ public final class CommunokotProgressPlugin extends JavaPlugin {
             databaseService = new DatabaseService(this, settings.databasePath());
             databaseService.start();
 
-            Map<UUID, Long> initialProgress = databaseService.loadStoneProgress();
-            progressService.loadInitialProgress(initialProgress);
+            // Hydrate in-memory cache from the database
+            Map<UUID, PlayerProgress> initialProgress = databaseService.loadAllProgress();
+            progressService.loadFromDatabase(initialProgress);
 
             Path dataFolder = getDataFolder().toPath();
             exportService = new ExportService(dataFolder, settings.snapshotPath());
             gitHubSyncService = new GitHubSyncService(this, settings);
 
-            getServer().getPluginManager().registerEvents(new StoneBreakListener(progressService), this);
+            // Register the unified session + advancement listener
+            getServer().getPluginManager().registerEvents(new PlayerSessionListener(progressService), this);
 
             CommunokotCommand commandExecutor = new CommunokotCommand(this);
             Objects.requireNonNull(getCommand("communokot"), "communokot command missing in plugin.yml")
@@ -77,7 +81,8 @@ public final class CommunokotProgressPlugin extends JavaPlugin {
 
     public void triggerManualExport(CommandSender sender) {
         sender.sendMessage("[Communokot] Manual export started...");
-        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+        // Sync stats on main thread first, then run I/O async
+        syncOnlinePlayersAndThen(() -> {
             String outcome = runCycle(true, true, "manual-command");
             getServer().getScheduler().runTask(this, () -> sender.sendMessage("[Communokot] " + outcome));
         });
@@ -112,19 +117,31 @@ public final class CommunokotProgressPlugin extends JavaPlugin {
         long snapshotIntervalTicks = settings.snapshotIntervalSeconds() * 20L;
         long dispatchIntervalTicks = settings.githubDispatchIntervalSeconds() * 20L;
 
-        snapshotTask = getServer().getScheduler().runTaskTimerAsynchronously(
+        // Snapshot task: sync stats on main thread, write files async
+        snapshotTask = getServer().getScheduler().runTaskTimer(
             this,
-            () -> runCycle(false, false, "snapshot-scheduler"),
+            () -> syncOnlinePlayersAndThen(() -> runCycle(false, false, "snapshot-scheduler")),
             snapshotIntervalTicks,
             snapshotIntervalTicks
         );
 
-        dispatchTask = getServer().getScheduler().runTaskTimerAsynchronously(
+        // Dispatch task: sync stats on main thread, write + push async
+        dispatchTask = getServer().getScheduler().runTaskTimer(
             this,
-            () -> runCycle(true, true, "dispatch-scheduler"),
+            () -> syncOnlinePlayersAndThen(() -> runCycle(true, true, "dispatch-scheduler")),
             dispatchIntervalTicks,
             dispatchIntervalTicks
         );
+    }
+
+    /**
+     * Sync all online players' Bukkit stats on the main thread,
+     * then run the given I/O task asynchronously.
+     */
+    private void syncOnlinePlayersAndThen(Runnable asyncWork) {
+        // This method is called from the main thread (scheduler runTaskTimer).
+        progressService.syncAllOnlinePlayers(getServer().getOnlinePlayers());
+        getServer().getScheduler().runTaskAsynchronously(this, asyncWork);
     }
 
     private void cancelTasks() {
@@ -142,6 +159,9 @@ public final class CommunokotProgressPlugin extends JavaPlugin {
         if (progressService == null || databaseService == null || exportService == null) {
             return;
         }
+
+        // onDisable runs on the main thread, so we can safely sync stats here
+        progressService.syncAllOnlinePlayers(getServer().getOnlinePlayers());
 
         cycleLock.lock();
         try {
@@ -171,7 +191,7 @@ public final class CommunokotProgressPlugin extends JavaPlugin {
 
     private String executeCycle(boolean persistToDatabase, boolean dispatchToGitHub, String reason) throws Exception {
         Instant generatedAt = Instant.now();
-        Map<UUID, Long> snapshot = progressService.snapshotStoneBroken();
+        Map<UUID, PlayerProgress> snapshot = progressService.snapshot();
         String json = exportService.buildSnapshotJson(generatedAt, snapshot);
 
         Path snapshotPath = exportService.writeSnapshot(json);
@@ -179,7 +199,7 @@ public final class CommunokotProgressPlugin extends JavaPlugin {
         status.append("Snapshot written to ").append(snapshotPath);
 
         if (persistToDatabase) {
-            databaseService.saveStoneProgress(snapshot, generatedAt);
+            databaseService.saveAllProgress(snapshot, generatedAt);
             status.append(" | SQLite flushed");
         }
 
