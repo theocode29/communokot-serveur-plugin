@@ -11,11 +11,11 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     env:
-      TARGET_BRANCH: ${{ github.event.client_payload.target_branch || 'main' }}
-      TARGET_PATH: ${{ github.event.client_payload.target_path || 'public/stone-progress.json' }}
-      COMMIT_MESSAGE: ${{ github.event.client_payload.commit_message || 'chore(data): update stone progress snapshot' }}
-      ENCODING: ${{ github.event.client_payload.encoding || 'base64' }}
-      SNAPSHOT_B64: ${{ github.event.client_payload.snapshot }}
+      TARGET_BRANCH: "${{ github.event.client_payload.target_branch || 'main' }}"
+      TARGET_PATH: "${{ github.event.client_payload.target_path || 'public/stone-progress.json' }}"
+      COMMIT_MESSAGE: "${{ github.event.client_payload.commit_message || 'chore(data): update stone progress snapshot' }}"
+      ENCODING: "${{ github.event.client_payload.encoding || 'base64' }}"
+      SNAPSHOT_B64: "${{ github.event.client_payload.snapshot }}"
 
     steps:
       - name: Checkout target branch
