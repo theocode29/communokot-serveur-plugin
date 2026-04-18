@@ -1,0 +1,62 @@
+name: Sync Stone Snapshot
+
+on:
+  repository_dispatch:
+    types: [communokot_progress_snapshot]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ github.event.client_payload.target_branch || 'main' }}
+      TARGET_PATH: ${{ github.event.client_payload.target_path || 'public/stone-progress.json' }}
+      COMMIT_MESSAGE: ${{ github.event.client_payload.commit_message || 'chore(data): update stone progress snapshot' }}
+      ENCODING: ${{ github.event.client_payload.encoding || 'base64' }}
+      SNAPSHOT_B64: ${{ github.event.client_payload.snapshot }}
+
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+
+      - name: Decode snapshot payload
+        shell: bash
+        run: |
+          python3 - << 'PY'
+          import base64
+          import gzip
+          import os
+          from pathlib import Path
+
+          encoding = os.environ["ENCODING"]
+          snapshot_b64 = os.environ["SNAPSHOT_B64"]
+          target_path = Path(os.environ["TARGET_PATH"])
+
+          raw = base64.b64decode(snapshot_b64)
+          if encoding == "gzip+base64":
+              raw = gzip.decompress(raw)
+          elif encoding != "base64":
+              raise RuntimeError(f"Unsupported encoding: {encoding}")
+
+          target_path.parent.mkdir(parents=True, exist_ok=True)
+          target_path.write_bytes(raw)
+          PY
+
+      - name: Commit and push if changed
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "$TARGET_PATH"
+          if git diff --cached --quiet; then
+            echo "No snapshot change to commit"
+            exit 0
+          fi
+
+          git commit -m "$COMMIT_MESSAGE"
+          git push origin "HEAD:$TARGET_BRANCH"
