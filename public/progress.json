@@ -1,16 +1,32 @@
 {
-  "lastUpdate": 1776534093,
+  "lastUpdate": 1776537584,
   "players": {
     "f9149e85-40fc-3334-857c-889c80c48ae2": {
       "name": "Theophile",
       "advancements": {
+        "infinity_cave:load": true,
         "infinity_cave:log_out": true,
+        "infinity_cave:mechanics/altar/tick": true,
+        "infinity_cave:mechanics/rideable_frog/dismount": true,
+        "infinity_cave:mechanics/weapons/sonic_bow/tick": true,
+        "infinity_cave:mechanics/weapons/thunder_harpoon/tick": true,
         "infinity_cave:technical/armor/boots": true,
         "infinity_cave:technical/armor/chestplate": true,
         "infinity_cave:technical/armor/helmet": true,
         "infinity_cave:technical/armor/leggings": true,
-        "minecraft:recipes/misc/diamond_from_blasting_diamond_ore": true,
-        "minecraft:recipes/misc/diamond_from_smelting_diamond_ore": true
+        "minecraft:adventure/kill_a_mob": true,
+        "minecraft:adventure/root": true,
+        "minecraft:husbandry/root": true,
+        "minecraft:story/iron_tools": true,
+        "minecraft:story/mine_diamond": true,
+        "minecraft:story/mine_stone": true,
+        "minecraft:story/root": true,
+        "minecraft:story/smelt_iron": true,
+        "minecraft:story/upgrade_tools": true,
+        "nova_structures:root": true,
+        "vanillatweaks:player_head_drops": true,
+        "vanillatweaks:root": true,
+        "vanillatweaks:wandering_trades": true
       },
       "mined": {
         "coal_ore": 0,
@@ -24,7 +40,7 @@
         "stone": 26
       },
       "distance_walked_cm": 898566,
-      "play_ticks": 2816320
+      "play_ticks": 2817768
     }
   }
 }
