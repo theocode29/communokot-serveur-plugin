@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1776539610,
+  "lastUpdate": 1776543304,
   "players": {
     "f9149e85-40fc-3334-857c-889c80c48ae2": {
       "name": "Theophile",
@@ -39,8 +39,8 @@
         "redstone_ore": 0,
         "stone": 26
       },
-      "distance_walked_cm": 898566,
-      "play_ticks": 2821320
+      "distance_walked_cm": 899380,
+      "play_ticks": 2835495
     }
   }
 }
