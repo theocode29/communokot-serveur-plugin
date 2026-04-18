@@ -1,0 +1,17 @@
+name: CommunokotProgress
+version: '${project.version}'
+main: io.communokot.progress.CommunokotProgressPlugin
+api-version: '1.21'
+authors: [Communokot]
+description: Tracks stone breaks, persists in SQLite, exports snapshots and syncs to GitHub.
+
+commands:
+  communokot:
+    description: Admin command for CommunokotProgress
+    usage: /communokot <export|reload>
+    permission: communokot.admin
+
+permissions:
+  communokot.admin:
+    description: Allows exporting snapshots and reloading CommunokotProgress config
+    default: op

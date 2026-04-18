@@ -1,0 +1,38 @@
+database:
+  # Relative paths are resolved inside the plugin data folder.
+  path: data/progress.db
+
+snapshot:
+  # Local snapshot file written every snapshotIntervalSeconds.
+  localPath: snapshots/stone-progress.json
+
+export:
+  # Local snapshot cadence (seconds)
+  snapshotIntervalSeconds: 60
+
+github:
+  enabled: true
+  owner: "your-org-or-user"
+  repo: "your-data-repo"
+  branch: "main"
+  eventType: "communokot_progress_snapshot"
+  targetPath: "public/stone-progress.json"
+
+  # Option A: set token directly here (not recommended for shared configs).
+  # Option B (recommended): leave empty and set env var COMMUNOKOT_GITHUB_TOKEN.
+  token: ""
+
+  # Dispatch cadence (seconds). Keep >= 300 for Actions scheduled cadence alignment.
+  dispatchIntervalSeconds: 300
+
+  # Use gzip+base64 to reduce repository_dispatch payload size.
+  payloadCompressionEnabled: true
+
+  # Safety guard. If payload body exceeds this, dispatch is skipped and local snapshot is kept.
+  maxPayloadBytes: 60000
+
+  # Retry attempts for transient HTTP failures.
+  maxRetries: 3
+
+  # Commit message used by the Actions workflow when writing the JSON file.
+  commitMessage: "chore(data): update stone progress snapshot"
