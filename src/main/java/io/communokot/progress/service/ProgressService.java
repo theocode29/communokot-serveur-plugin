@@ -2,12 +2,15 @@ package io.communokot.progress.service;
 
 import io.communokot.progress.model.PlayerProgress;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 
 /**
@@ -95,6 +98,24 @@ public final class ProgressService {
     public void recordAdvancement(UUID playerId, String playerName, String advancementKey) {
         PlayerProgress progress = getOrCreate(playerId, playerName);
         progress.markAdvancement(advancementKey);
+    }
+
+    /**
+     * Hydrate a player's already completed advancements from Bukkit stats, filtering out recipes.
+     */
+    public void hydratePlayerAdvancements(Player player) {
+        PlayerProgress progress = getOrCreate(player.getUniqueId(), player.getName());
+        Iterator<Advancement> it = Bukkit.advancementIterator();
+        while (it.hasNext()) {
+            Advancement adv = it.next();
+            String key = adv.getKey().toString();
+            if (key.startsWith("minecraft:recipes/")) {
+                continue;
+            }
+            if (player.getAdvancementProgress(adv).isDone()) {
+                progress.markAdvancement(key);
+            }
+        }
     }
 
     // ── Snapshot ─────────────────────────────────────────────────────────

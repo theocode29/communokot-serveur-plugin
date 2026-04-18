@@ -27,6 +27,7 @@ public final class PlayerSessionListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         progressService.syncOnlinePlayer(event.getPlayer());
+        progressService.hydratePlayerAdvancements(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -37,6 +38,9 @@ public final class PlayerSessionListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
         String key = event.getAdvancement().getKey().toString();
+        if (key.startsWith("minecraft:recipes/")) {
+            return;
+        }
         progressService.recordAdvancement(
             event.getPlayer().getUniqueId(),
             event.getPlayer().getName(),
