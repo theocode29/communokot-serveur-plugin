@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1776607924,
+  "lastUpdate": 1776786192,
   "players": {
     "f9149e85-40fc-3334-857c-889c80c48ae2": {
       "name": "Theophile",
@@ -15,6 +15,7 @@
         "infinity_cave:technical/armor/helmet": true,
         "infinity_cave:technical/armor/leggings": true,
         "minecraft:adventure/kill_a_mob": true,
+        "minecraft:adventure/ol_betsy": true,
         "minecraft:adventure/root": true,
         "minecraft:husbandry/root": true,
         "minecraft:story/iron_tools": true,
@@ -40,7 +41,7 @@
         "stone": 26
       },
       "distance_walked_cm": 900487,
-      "play_ticks": 3064858
+      "play_ticks": 3070638
     }
   }
 }
