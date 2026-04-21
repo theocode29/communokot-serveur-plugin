@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1776786192,
+  "lastUpdate": 1776786792,
   "players": {
     "f9149e85-40fc-3334-857c-889c80c48ae2": {
       "name": "Theophile",
@@ -41,7 +41,7 @@
         "stone": 26
       },
       "distance_walked_cm": 900487,
-      "play_ticks": 3070638
+      "play_ticks": 3082638
     }
   }
 }
